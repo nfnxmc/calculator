@@ -85,4 +85,17 @@ public class CalculatorTest {
             throw ne;
         }
     }
+
+    @Test
+    public void ignoreNumberBiggerThan1000() {
+        Calculator calculator = new Calculator();
+        try {
+            assertEquals(0, calculator.add("//;\n"));
+            assertEquals(1006, calculator.add("//|\n1\n2|3|1000"));
+            assertEquals(6, calculator.add("//+\n1+2+3+1002"));
+            assertEquals(6, calculator.add("//+\n1+2+3+1002+999999"));
+        } catch (NegativeNumberException e) {
+            LOGGER.info(e.getMessage());
+        }
+    }
 }
