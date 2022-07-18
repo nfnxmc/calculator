@@ -2,44 +2,87 @@ package org.mnc;
 
 import org.junit.Test;
 
+import java.util.logging.Logger;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CalculatorTest {
 
+    public static final Logger LOGGER = Logger.getLogger("CalculatorTestLogger");
+
     @Test(expected = NumberFormatException.class)
     public void step1NumberFormat() {
-        new Calculator().add("1,&");
+        try {
+            new Calculator().add("1,&");
+        } catch (NegativeNumberException e) {
+            LOGGER.info(e.getMessage());
+        }
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void step3EmptyLastLine() {
-        new Calculator().add("1,\n");
+        try {
+            new Calculator().add("1,\n");
+        } catch (NegativeNumberException e) {
+            LOGGER.info(e.getMessage());
+        }
     }
 
     @Test
     public void step1() {
         Calculator calculator = new Calculator();
 
-        assertEquals(0, calculator.add(""));
-        assertEquals(1, calculator.add("1"));
-        assertEquals(3, calculator.add("1,2"));
-        assertEquals(45, calculator.add("0,1,2,3,4,5,6,7,8,9"));
+        try {
+            assertEquals(0, calculator.add(""));
+            assertEquals(1, calculator.add("1"));
+            assertEquals(3, calculator.add("1;2"));
+            assertEquals(45, calculator.add("0;1;2;3;4;5;6;7;8;9"));
+        } catch (NegativeNumberException e) {
+            LOGGER.info(e.getMessage());
+        }
+
     }
 
     @Test
     public void step3() {
         Calculator calculator = new Calculator();
-
-        assertEquals(0, calculator.add(""));
-        assertEquals(1, calculator.add("1\n"));
-        assertEquals(6, calculator.add("1\n2,3"));
+        try {
+            assertEquals(0, calculator.add(""));
+            assertEquals(1, calculator.add("1\n"));
+            assertEquals(6, calculator.add("1\n2;3"));
+        } catch (NegativeNumberException e) {
+            LOGGER.info(e.getMessage());
+        }
     }
 
     @Test
     public void step4() {
         Calculator calculator = new Calculator();
-        assertEquals(0, calculator.add("//;\n"));
-        assertEquals(6, calculator.add("//|\n1\n2|3"));
-        assertEquals(6, calculator.add("//+\n1+2+3"));
+        try {
+            assertEquals(0, calculator.add("//;\n"));
+            assertEquals(6, calculator.add("//|\n1\n2|3"));
+            assertEquals(6, calculator.add("//+\n1+2+3"));
+        } catch (NegativeNumberException e) {
+            LOGGER.info(e.getMessage());
+        }
+    }
+
+    @Test(expected = NegativeNumberException.class)
+    public void step5NegativeNumbers() throws NegativeNumberException {
+        Calculator calculator = new Calculator();
+        try {
+            assertEquals(6, calculator.add("//|\n1\n2|-3"));
+        } catch( NegativeNumberException ne) {
+            assertTrue(ne.getMessage().contains("-3"));
+            throw ne;
+        }
+        try {
+            assertEquals(6, calculator.add("//|\n1\n2|-1|-5"));
+        } catch (NegativeNumberException ne) {
+            assertTrue(ne.getMessage().contains("-1"));
+            assertTrue(ne.getMessage().contains("-5"));
+            throw ne;
+        }
     }
 }
