@@ -18,7 +18,11 @@ public class Calculator {
         }
         int firstIndexOfNewLine = numbers.indexOf("\n");
         String separator = numbers.substring(2, firstIndexOfNewLine);
-        return escapeWildcard(separator);
+        return regroupDelimiters(separator);
+    }
+
+    private String regroupDelimiters(String separators) {
+        return Arrays.stream(separators.split("[\\[\\]]")).filter(s -> !s.isBlank()).map(this::escapeWildcard).collect(Collectors.joining("|"));
     }
 
     private String escapeWildcard(String regex) {

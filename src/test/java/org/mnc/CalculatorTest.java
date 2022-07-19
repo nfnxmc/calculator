@@ -73,7 +73,7 @@ public class CalculatorTest {
         Calculator calculator = new Calculator();
         try {
             assertEquals(6, calculator.add("//|\n1\n2|-3"));
-        } catch( NegativeNumberException ne) {
+        } catch (NegativeNumberException ne) {
             assertTrue(ne.getMessage().contains("-3"));
             throw ne;
         }
@@ -98,6 +98,7 @@ public class CalculatorTest {
             LOGGER.info(e.getMessage());
         }
     }
+
     @Test
     public void step7DifferentLengthSeparator() {
         Calculator calculator = new Calculator();
@@ -105,6 +106,18 @@ public class CalculatorTest {
             assertEquals(0, calculator.add("//***\n"));
             assertEquals(1006, calculator.add("//|sep\n1\n2|sep3|sep1000"));
             assertEquals(6, calculator.add("//***\n1***2***3"));
+        } catch (NegativeNumberException e) {
+            LOGGER.info(e.getMessage());
+        }
+    }
+
+    @Test
+    public void step8MultipleDelimiters() {
+        Calculator calculator = new Calculator();
+        try {
+            assertEquals(0, calculator.add("//***\n"));
+            assertEquals(1006, calculator.add("//[n][;][***]\n1***2n3;1000"));
+            assertEquals(6, calculator.add("//[*][%]\n1*2%3"));
         } catch (NegativeNumberException e) {
             LOGGER.info(e.getMessage());
         }
