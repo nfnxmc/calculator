@@ -18,7 +18,16 @@ public class Calculator {
         }
         int firstIndexOfNewLine = numbers.indexOf("\n");
         String separator = numbers.substring(2, firstIndexOfNewLine);
-        return ESCAPES.contains(separator) ? "\\" + separator : separator;
+        return escapeWildcard(separator);
+    }
+
+    private String escapeWildcard(String regex) {
+        String escaped = regex;
+        for (String s : ESCAPES) {
+            escaped = escaped.replace(s, "\\" + s);
+        }
+
+        return escaped;
     }
 
     private int numbersStart(String numbers) {
@@ -41,6 +50,6 @@ public class Calculator {
     private void validateOperands(String[] operands) throws NegativeNumberException {
         List<String> negativeNumbers = Arrays.stream(operands).flatMap(s -> Arrays.stream(s.split("\\n"))).filter(operand -> !(operand.isBlank() || NEW_LINE.equals(operand))).map(operand -> Integer.parseInt(operand)).filter(number -> number < 0).map(i -> i.toString()).collect(Collectors.toList());
         if (negativeNumbers.isEmpty()) return;
-        throw new NegativeNumberException("[" + String.join(",", negativeNumbers) + "] negatives not allowed" );
+        throw new NegativeNumberException("[" + String.join(",", negativeNumbers) + "] negatives not allowed");
     }
 }

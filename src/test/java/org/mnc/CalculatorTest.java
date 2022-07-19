@@ -98,4 +98,15 @@ public class CalculatorTest {
             LOGGER.info(e.getMessage());
         }
     }
+    @Test
+    public void step7DifferentLengthSeparator() {
+        Calculator calculator = new Calculator();
+        try {
+            assertEquals(0, calculator.add("//***\n"));
+            assertEquals(1006, calculator.add("//|sep\n1\n2|sep3|sep1000"));
+            assertEquals(6, calculator.add("//***\n1***2***3"));
+        } catch (NegativeNumberException e) {
+            LOGGER.info(e.getMessage());
+        }
+    }
 }
